@@ -31,3 +31,11 @@ build/
 
 ### VS Code ###
 .vscode/
+
+### Secrets & Wallets ###
+*.wallet
+wallet/
+*.sso
+*.p12
+*.jks
+*.pem

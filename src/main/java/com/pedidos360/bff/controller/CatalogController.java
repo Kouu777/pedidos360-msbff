@@ -5,7 +5,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestClient;
 
 @RestController
-@RequestMapping("/api/catalog")
+@RequestMapping("/api/catalog/products")
 public class CatalogController {
 
     private final RestClient catalogClient;
@@ -19,14 +19,22 @@ public class CatalogController {
     @PreAuthorize("hasAnyRole('Admin','Operador','Cliente')")
     public String getCatalog() {
         // El BFF llama al microservicio real y devuelve su respuesta
-        return catalogClient.get().uri("/api/catalog").retrieve().body(String.class);
+        return catalogClient.get().uri("/api/catalog/products").retrieve().body(String.class);
     }
 
     // POST: Solo Admin
     @PostMapping
     @PreAuthorize("hasRole('Admin')")
     public String createProduct(@RequestBody String productData) {
-        return catalogClient.post().uri("/api/catalog")
+        return catalogClient.post().uri("/api/catalog/products")
+                .body(productData).retrieve().body(String.class);
+    }
+
+    // PUT: Admin y Operador
+    @PutMapping("/{id}")
+    @PreAuthorize("hasAnyRole('Admin','Operador')")
+    public String updateProduct(@PathVariable String id, @RequestBody String productData) {
+        return catalogClient.put().uri("/api/catalog/products/" + id)
                 .body(productData).retrieve().body(String.class);
     }
 
@@ -34,14 +42,14 @@ public class CatalogController {
     @DeleteMapping("/{id}")
     @PreAuthorize("hasRole('Admin')")
     public void deleteProduct(@PathVariable String id) {
-        catalogClient.delete().uri("/api/catalog/" + id).retrieve().toBodilessEntity();
+        catalogClient.delete().uri("/api/catalog/products/" + id).retrieve().toBodilessEntity();
     }
 
-    // PUT y PATCH: Admin y Operador
+    // PATCH: Admin y Operador
     @PatchMapping("/{id}/stock")
     @PreAuthorize("hasAnyRole('Admin','Operador')")
     public String updateStock(@PathVariable String id, @RequestBody String stockData) {
-        return catalogClient.patch().uri("/api/catalog/" + id + "/stock")
+        return catalogClient.patch().uri("/api/catalog/products/" + id + "/stock")
                 .body(stockData).retrieve().body(String.class);
     }
 }

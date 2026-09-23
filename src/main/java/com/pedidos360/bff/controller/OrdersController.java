@@ -3,6 +3,7 @@ package com.pedidos360.bff.controller;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import org.springframework.http.MediaType;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -63,6 +64,7 @@ public class OrdersController {
         }
 
         return ordersClient.post().uri("/api/orders")
+                .contentType(MediaType.APPLICATION_JSON)
                 .header("X-Customer-Email", email)
                 .header("X-Customer-Name", name)
                 .body(payloadToSend)
@@ -74,6 +76,7 @@ public class OrdersController {
     @PreAuthorize("hasAnyRole('Admin','Operador')")
     public String updateOrderStatus(@PathVariable String id, @RequestBody String statusData) {
         return ordersClient.patch().uri("/api/orders/" + id + "/status")
+                .contentType(MediaType.APPLICATION_JSON)
                 .body(statusData).retrieve().body(String.class);
     }
 

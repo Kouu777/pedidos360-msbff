@@ -1,5 +1,6 @@
 package com.pedidos360.bff.controller;
 
+import org.springframework.http.MediaType;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestClient;
@@ -27,6 +28,7 @@ public class CatalogController {
     @PreAuthorize("hasRole('Admin')")
     public String createProduct(@RequestBody String productData) {
         return catalogClient.post().uri("/api/catalog/products")
+                .contentType(MediaType.APPLICATION_JSON)
                 .body(productData).retrieve().body(String.class);
     }
 
@@ -35,6 +37,7 @@ public class CatalogController {
     @PreAuthorize("hasAnyRole('Admin','Operador')")
     public String updateProduct(@PathVariable String id, @RequestBody String productData) {
         return catalogClient.put().uri("/api/catalog/products/" + id)
+                .contentType(MediaType.APPLICATION_JSON)
                 .body(productData).retrieve().body(String.class);
     }
 
@@ -50,6 +53,7 @@ public class CatalogController {
     @PreAuthorize("hasAnyRole('Admin','Operador')")
     public String updateStock(@PathVariable String id, @RequestBody String stockData) {
         return catalogClient.patch().uri("/api/catalog/products/" + id + "/stock")
+                .contentType(MediaType.APPLICATION_JSON)
                 .body(stockData).retrieve().body(String.class);
     }
 }

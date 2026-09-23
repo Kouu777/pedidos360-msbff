@@ -1,5 +1,6 @@
 package com.pedidos360.bff.controller;
 
+import org.springframework.http.MediaType;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestClient;
@@ -24,6 +25,7 @@ public class OrdersController {
     @PreAuthorize("hasAnyRole('Admin','Operador','Cliente')")
     public String createOrder(@RequestBody String orderData) {
         return ordersClient.post().uri("/api/orders")
+                .contentType(MediaType.APPLICATION_JSON)
                 .body(orderData).retrieve().body(String.class);
     }
 
@@ -31,6 +33,7 @@ public class OrdersController {
     @PreAuthorize("hasAnyRole('Admin','Operador')")
     public String updateOrderStatus(@PathVariable String id, @RequestBody String statusData) {
         return ordersClient.patch().uri("/api/orders/" + id + "/status")
+                .contentType(MediaType.APPLICATION_JSON)
                 .body(statusData).retrieve().body(String.class);
     }
 }
